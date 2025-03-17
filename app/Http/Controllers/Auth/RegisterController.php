@@ -16,4 +16,24 @@ class RegisterController extends Controller
         return view('auth.register');
     }
 
+    public function registrationUser(Request $request): RedirectResponse {
+        // valide datas for registration
+        $request->validate([
+            'name' => ['required'],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'password' => ['required', 'confirmed']
+        ]);
+
+
+        // create a new user
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'role'  => 'user',
+            'password' => Hash::make($request-> password),
+        ]);
+
+        return to_route('login')->with('sucess', 'Registration sucess');
+    }
+
 }
